@@ -15,9 +15,10 @@ public class CharacterMoveController : MonoBehaviour
     public float groundRaycastDistance;
     public LayerMask groundLayerMask;
 
-    //[Header("Scoring")]
-    //public ScoreController score;
-    //public float scoringRatio;
+    [Header("Scoring")]
+    public ScoreController score;
+    public float scoringRatio;
+    private float lastPositionX;
 
     private Rigidbody2D rig;
     private Animator anim;
@@ -44,7 +45,7 @@ public class CharacterMoveController : MonoBehaviour
         //if(Input.GetMouseButtonDown(0))
         {
             Debug.Log("Can be clicked.");
-            if(isOnGround == true)
+            if(isOnGround)
             {
                 isJumping = true;
 
@@ -52,6 +53,14 @@ public class CharacterMoveController : MonoBehaviour
             }
         }
         anim.SetBool("isOnGround", isOnGround);
+
+        int distancePassed = Mathf.FloorToInt(transform.position.x - lastPositionX);
+        int scoreIncrement = Mathf.FloorToInt(distancePassed / scoringRatio);
+        if(scoringRatio > 0)
+        {
+            score.IncreaseCurrentScore(scoreIncrement);
+            lastPositionX += distancePassed;
+        }
     }
 
     private void FixedUpdate()
