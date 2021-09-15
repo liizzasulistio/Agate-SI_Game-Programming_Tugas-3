@@ -20,6 +20,14 @@ public class CharacterMoveController : MonoBehaviour
     public float scoringRatio;
     private float lastPositionX;
 
+    [Header("GameOver")]
+    public GameObject gameOverScreen;
+    public float fallPositionY;
+
+    [Header("Camera")]
+    public CameraMoveController gameCamera;
+
+
     private Rigidbody2D rig;
     private Animator anim;
     private CharacterSoundController sound;
@@ -56,10 +64,15 @@ public class CharacterMoveController : MonoBehaviour
 
         int distancePassed = Mathf.FloorToInt(transform.position.x - lastPositionX);
         int scoreIncrement = Mathf.FloorToInt(distancePassed / scoringRatio);
-        if(scoringRatio > 0)
+        if(scoreIncrement > 0)
         {
             score.IncreaseCurrentScore(scoreIncrement);
             lastPositionX += distancePassed;
+        }
+
+        if(transform.position.y < fallPositionY)
+        {
+            GameOver();
         }
     }
 
@@ -90,6 +103,16 @@ public class CharacterMoveController : MonoBehaviour
         rig.velocity = velocityVector;
     }
 
+    private void GameOver()
+    {
+        score.FinishScoring();
+        gameCamera.enabled = false;
+        gameOverScreen.SetActive(true);
+        this.enabled = false;
+    }
+
+
+    // For debugging
     private void OnDrawGizmos()
     {
         Debug.DrawLine(transform.position, transform.position + (Vector3.down * groundRaycastDistance), Color.white);
