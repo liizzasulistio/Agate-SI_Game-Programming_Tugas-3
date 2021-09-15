@@ -49,8 +49,8 @@ public class CharacterMoveController : MonoBehaviour
     private void Update()
     {
         // read input
-        if(Input.GetKey(KeyCode.Space)) // buat cek
-        //if(Input.GetMouseButtonDown(0))
+        //if(Input.GetKey(KeyCode.Space)) // buat cek
+        if(Input.GetMouseButtonDown(0) || Input.GetKey(KeyCode.Space))
         {
             Debug.Log("Can be clicked.");
             if(isOnGround)
