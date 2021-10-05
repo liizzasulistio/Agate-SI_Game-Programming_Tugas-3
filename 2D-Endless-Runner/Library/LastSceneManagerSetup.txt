@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/2D-Endless-Runner.unity
+- path: Assets/Scenes/Gameplay.unity
   isLoaded: 1
   isActive: 1
