@@ -4,15 +4,39 @@ using UnityEngine;
 
 public class ScoreController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Score Highlight")]
+    public int scoreHighlightRange;
+    public CharacterSoundController sound;
+
+    private int currentScore = 0;
+    private int lastScoreHighlight = 0;
+
+    private void Start()
     {
-        
+        currentScore = 0;
+        lastScoreHighlight = 0;
     }
 
-    // Update is called once per frame
-    void Update()
+    public float GetCurrentScore()
     {
-        
+        return currentScore;
+    }
+
+    public void IncreaseCurrentScore(int increment)
+    {
+        currentScore += increment;
+        if (currentScore - lastScoreHighlight > scoreHighlightRange)
+        {
+            sound.PlayScoreHighlight();
+            lastScoreHighlight += scoreHighlightRange;
+        }
+    }
+
+    public void FinishScoring()
+    {
+        if (currentScore > ScoreData.highScore)
+        {
+            ScoreData.highScore = currentScore;
+        }
     }
 }

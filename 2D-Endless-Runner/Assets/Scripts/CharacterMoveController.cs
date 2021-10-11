@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CharacterMoveController : MonoBehaviour
 {
@@ -9,11 +7,22 @@ public class CharacterMoveController : MonoBehaviour
     public float maxSpeed;
 
     [Header("Jump")]
-    public float jumAccel;
+    public float jumpAccel;
 
     [Header("Ground Raycast")]
     public float groundRaycastDist;
     public LayerMask groundLayerMask;
+
+    [Header("Scoring")]
+    public ScoreController score;
+    public float scoringRatio;
+
+    [Header("GameOver")]
+    public GameObject gameOverScreen;
+    public float fallPositionY;
+
+    [Header("Camera")]
+    public CameraMoveController gameCamera;
 
     private Rigidbody2D charaRB;
     private Animator charaAnim;
@@ -21,13 +30,15 @@ public class CharacterMoveController : MonoBehaviour
 
     private bool isJumping;
     private bool isOnGround;
-    
+    private float lastPositionX;
 
     private void Start()
     {
         charaRB = GetComponent<Rigidbody2D>();
         charaAnim = GetComponent<Animator>();
         sound = GetComponent<CharacterSoundController>();
+
+        lastPositionX = transform.position.x;
     }
 
     private void FixedUpdate()
@@ -44,7 +55,7 @@ public class CharacterMoveController : MonoBehaviour
         Vector2 velocityVector = charaRB.velocity;
         if(isJumping)
         {
-            velocityVector.y += jumAccel;
+            velocityVector.y += jumpAccel;
             isJumping = false;
         }
 
@@ -64,7 +75,29 @@ public class CharacterMoveController : MonoBehaviour
             }
         }
         charaAnim.SetBool("isOnGround", isOnGround);
+        int distancePassed = Mathf.FloorToInt(transform.position.x - lastPositionX);
+        int scoreIncrement = Mathf.FloorToInt(distancePassed / scoringRatio);
+
+        if (scoreIncrement > 0)
+        {
+            score.IncreaseCurrentScore(scoreIncrement);
+            lastPositionX += distancePassed;
+        }
+
+        if (transform.position.y < fallPositionY)
+        {
+            GameOver();
+        }
     }
+
+    private void GameOver()
+    {
+        score.FinishScoring();
+        gameCamera.enabled = false;
+        gameOverScreen.SetActive(true);
+        this.enabled = false;
+    }
+
 
     private void OnDrawGizmos()
     {
