@@ -17,6 +17,7 @@ public class CharacterMoveController : MonoBehaviour
 
     private Rigidbody2D charaRB;
     private Animator charaAnim;
+    private CharacterSoundController sound;
 
     private bool isJumping;
     private bool isOnGround;
@@ -26,6 +27,7 @@ public class CharacterMoveController : MonoBehaviour
     {
         charaRB = GetComponent<Rigidbody2D>();
         charaAnim = GetComponent<Animator>();
+        sound = GetComponent<CharacterSoundController>();
     }
 
     private void FixedUpdate()
@@ -55,7 +57,11 @@ public class CharacterMoveController : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            if (isOnGround) isJumping = true;
+            if (isOnGround)
+            {
+                isJumping = true;
+                sound.PlayJump();
+            }
         }
         charaAnim.SetBool("isOnGround", isOnGround);
     }
